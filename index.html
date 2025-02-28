@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.4.0/math.min.js"></script>
+  <title>Métodos Numéricos</title>
+</head>
+
+<body class="container py-4 d-flex flex-column bg-dark">
+  <div class="main-content">
+    <h1 class="text-center text-primary mb-4">
+      Métodos Numéricos
+    </h1>
+
+    <form id="form" class="bg-light p-4 rounded shadow">
+      <!-- Selector de método -->
+      <div class="form-group">
+        <label class="font-weight-bold text-primary" for="method" >Selecciona un método numerico a resolver:</label>
+        <select id="method" name="method" class="form-control">
+          <option value="NA">Seleccionar método</option>
+          <option value="eulerMejorado">Euler Mejorado</option>
+          <option value="rungeKutta">Runge-Kutta 4to orden</option>
+          <option value="newtonRaphson">Newton-Raphson</option>
+        </select>
+      </div>
+
+      <!-- Secciones dinámicas para los métodos -->
+      <div class="euler-mejorado"></div>
+      <div class="newton-raphson"></div>
+      <div class="runge-kutta-4to-orden"></div>
+
+      <!-- Botón de cálculo -->
+      <div class="d-flex justify-content-center mt-3">
+        <button id="calcular" type="submit" class="btn btn-primary" disabled>Calcular</button>
+      </div>
+       <!-- Resultado -->
+    <div id="result" class="text-center mt-4 bg-light p-4 rounded">
+      <div id="result-content"></div>
+    </div>
+    </form>
+
+   
+  </div>
+</body>
+
+<footer class="text-center mt-4"></footer>
+
+<!-- Scripts -->
+<script type="text/javascript" src="js/metodos/euler-mejorado.js"></script>
+<script type="text/javascript" src="js/metodos/newton-raphson.js"></script>
+<script type="text/javascript" src="js/metodos/runge-kutta-4to-orden.js"></script>
+<script type="text/javascript" src="js/results/euler.js"></script>
+<script type="text/javascript" src="js/results/newton-raphson.js"></script>
+<script type="text/javascript" src="js/results/runge-kutta.js"></script>
+<script type="text/javascript" src="js/form/select.js"></script>
+<script type="text/javascript" src="js/form/form.js"></script>
+
+</html>

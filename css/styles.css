@@ -1,0 +1,80 @@
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1 0 auto;
+}
+
+footer {
+  flex-shrink: 0;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Tooltip */
+[data-toggle="tooltip"] {
+  cursor: pointer;
+  margin-left: 10px;
+}
+  
+  /* Estilos cuando el input tiene un error */
+  .form-control.is-invalid {
+    border-color: #dc3545;
+    background-color: #f8d7da;
+  }
+
+  /* Cambiar el placeholder cuando está activo */
+  .form-control::placeholder {
+    color: #6c757d;
+    font-style: italic;
+  }
+
+  /* Estilo cuando el input tiene valor */
+  .form-control:not(:placeholder-shown) {
+    background-color: #e9ecef;
+  }
+
+  /* Fondo y bordes al pasar el mouse */
+  .form-control:hover {
+    border-color: #007bff;
+    background-color: #f1f3f5;
+  }
+
+  /* Estilo de la etiqueta */
+  .form-group label {
+    font-size: 1.1rem;
+    color: #495057;
+  }
+
+
+
+
+  .pagination {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .page-btn {
+    padding: 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+  }
+  
+  .page-btn.active {
+    background-color: #0056b3;
+  }
+  
+  .page-btn:hover {
+    background-color: #0056b3;
+  }
+  

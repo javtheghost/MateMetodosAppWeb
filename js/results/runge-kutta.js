@@ -21,76 +21,72 @@ function rungeKuttaResult({
     f
   });
 
+  const iterResults = res.iteraciones; // Asumiendo que los resultados están en res.iteraciones
+  const resultsPerPage = 10;  // Número de resultados por página
+  let currentPage = 1;  // Página actual
+
+  // Función para mostrar los resultados de la página actual
+  function showResultsPage(page) {
+    const startIdx = (page - 1) * resultsPerPage;
+    const endIdx = page * resultsPerPage;
+    const resultsToShow = iterResults.slice(startIdx, endIdx);
+
+    let $tbody = $('#rk4o-body-table');
+    $tbody.empty();
+
+    // Llenar la tabla con los resultados de la página actual
+    resultsToShow.forEach(iteracion => {
+      let $tr = $('<tr>');
+
+      $tr.append($('<td>').text(iteracion.paso)); // Iteración
+      $tr.append($('<td>').text(iteracion.xn)); // x{n}
+      $tr.append($('<td>').text(iteracion.yn)); // y{n}
+      $tr.append($('<td>').text(iteracion.k1)); // k1
+      $tr.append($('<td>').text(iteracion.k2)); // k2
+      $tr.append($('<td>').text(iteracion.k3)); // k3
+      $tr.append($('<td>').text(iteracion.k4)); // k4
+      $tr.append($('<td>').text(iteracion.yn1)); // y{n+1}
+
+      $tbody.append($tr);
+    });
+
+    // Actualizar la paginación
+    updatePagination(page);
+  }
+
+  // Función para actualizar la paginación
+  function updatePagination(page) {
+    const totalPages = Math.ceil(iterResults.length / resultsPerPage);
+    
+    // Mostrar u ocultar botones según la página actual
+    $('#pagination').empty();
+
+    // Botón de "Anterior"
+    const prevDisabled = page <= 1 ? 'disabled' : '';
+    $('#pagination').append(`<button class="page-btn ${prevDisabled}" data-page="${page - 1}">Anterior</button>`);
+
+    // Botones de las páginas
+    for (let i = 1; i <= totalPages; i++) {
+      const activeClass = (i === page) ? 'active' : '';
+      $('#pagination').append(`<button class="page-btn ${activeClass}" data-page="${i}">${i}</button>`);
+    }
+
+    // Botón de "Siguiente"
+    const nextDisabled = page >= totalPages ? 'disabled' : '';
+    $('#pagination').append(`<button class="page-btn ${nextDisabled}" data-page="${page + 1}">Siguiente</button>`);
+
+    // Añadir evento de clic a los botones de paginación
+    $('.page-btn').on('click', function () {
+      const page = parseInt($(this).data('page'));
+      if (!$(this).hasClass('disabled')) {
+        showResultsPage(page);
+      }
+    });
+  }
+
   // Cargar la tabla y mostrar los resultados
   result.load('components/tables/runge-kutta-table.html', function () {
-    const $tbody = $('#rk4o-body-table');
-    const $pagination = $('#pagination'); // Contenedor para los botones de paginación
-    const rowsPerPage = 10; // Número de filas por página
-    let currentPage = 1; // Página actual
-
-    // Función para mostrar las filas de la página actual
-    const showPage = (page) => {
-      $tbody.empty(); // Limpiar la tabla
-      const start = (page - 1) * rowsPerPage;
-      const end = start + rowsPerPage;
-      const pageRows = res.iteraciones.slice(start, end); // Obtener filas de la página actual
-
-      // Llenar la tabla con las filas de la página actual
-      pageRows.forEach((iteracion) => {
-        const $tr = $('<tr>');
-        $tr.append($('<td>').text(iteracion.paso)); // Iteración
-        $tr.append($('<td>').text(iteracion.xn)); // x{n}
-        $tr.append($('<td>').text(iteracion.yn)); // y{n}
-        $tr.append($('<td>').text(iteracion.k1)); // k1
-        $tr.append($('<td>').text(iteracion.k2)); // k2
-        $tr.append($('<td>').text(iteracion.k3)); // k3
-        $tr.append($('<td>').text(iteracion.k4)); // k4
-        $tr.append($('<td>').text(iteracion.yn1)); // y{n+1}
-        $tbody.append($tr);
-      });
-    };
-
-    // Función para actualizar los botones de paginación
-    const updatePagination = () => {
-      $pagination.empty(); // Limpiar los botones de paginación
-      const totalPages = Math.ceil(res.iteraciones.length / rowsPerPage); // Calcular el total de páginas
-
-      // Botón "Anterior"
-      const $prevButton = $('<button>').text('Anterior').click(() => {
-        if (currentPage > 1) {
-          currentPage--;
-          showPage(currentPage);
-          updatePagination();
-        }
-      });
-      $pagination.append($prevButton);
-
-      // Botones de páginas
-      for (let i = 1; i <= totalPages; i++) {
-        const $pageButton = $('<button>').text(i).click(() => {
-          currentPage = i;
-          showPage(currentPage);
-          updatePagination();
-        });
-        if (i === currentPage) {
-          $pageButton.addClass('active'); // Resaltar la página actual
-        }
-        $pagination.append($pageButton);
-      }
-
-      // Botón "Siguiente"
-      const $nextButton = $('<button>').text('Siguiente').click(() => {
-        if (currentPage < totalPages) {
-          currentPage++;
-          showPage(currentPage);
-          updatePagination();
-        }
-      });
-      $pagination.append($nextButton);
-    };
-
-    // Mostrar la primera página al cargar
-    showPage(currentPage);
-    updatePagination();
+    // Mostrar la primera página al cargar la tabla
+    showResultsPage(currentPage);
   });
 }

@@ -11,8 +11,8 @@ function rungeKutta({ decimales, h, xn, yn, yf, f }) {
     return Math.round(numero * factor) / factor;
   }
 
-  // Ejecutar hasta que xn alcance o supere yf
-  while (xn < yf) {
+  // Ejecutar un número fijo de iteraciones (yf veces)
+  for (let i = 0; i < yf; i++) {
     // Calcular los valores de k1, k2, k3, k4
     let k1 = h * math.evaluate(f, { x: xn, y: yn });
     let k2 = h * math.evaluate(f, { x: xn + h / 2, y: yn + k1 / 2 });

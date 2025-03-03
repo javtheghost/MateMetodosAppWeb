@@ -23,7 +23,7 @@ function eulerResult({ decimales, form_data, result }) {
     <div class="table-scroll-container">
       <table id="euler-table" class="display">
           <thead>
-              <tr>
+              <tr class="text-primary">
                   <th>n</th>
                   <th>x{n}</th>
                   <th>Aproximación</th>

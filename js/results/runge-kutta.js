@@ -30,7 +30,7 @@ function rungeKuttaResult({ decimales, form_data, result }) {
       <h1 class="text-primary">Resultados:</h1>
       <table id="rungeKuttaTable" class="display">
         <thead>
-          <tr>
+          <tr class="text-primary">
             <th>n</th>
             <th>x{n}</th>
             <th>y{n}</th>

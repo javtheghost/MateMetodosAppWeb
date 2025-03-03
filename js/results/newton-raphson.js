@@ -1,81 +1,77 @@
-function newtonRaphsonResult({
-  form_data,
-  decimales,
-  result
-}) {
+function newtonRaphsonResult({ form_data, decimales, result }) {
   const {
     'nr-x': x,
     'nr-f': f,
-  } = form_data
+  } = form_data;
 
   const iterResults = newtonRaphson({
     decimales: parseInt(decimales),
     x0: parseFloat(x),
     f
-  })
+  });
 
-  if (!iterResults) return
+  if (!iterResults) return;
 
-  const resultsPerPage = 10  // Número de resultados por página
-  let currentPage = 1  // Página actual
+  // Insertar el HTML de la tabla directamente en el contenedor "result"
+  const tableHtml = `
+    <div class="table-scroll-container">
+      <h1 class="text-primary">Resultados:</h1>
+      <table id="newtonRaphsonTable" class="display">
+        <thead>
+          <tr class="text-primary">
+            <th>Paso</th>
+            <th>X</th>
+            <th>F(X)</th>
+            <th>|x(i) - x(i-1)|</th>
+          </tr>
+        </thead>
+        <tbody id="nr-body-table">
+        </tbody>
+      </table>
+    </div>
+  `;
+  result.html(tableHtml); // Insertar la tabla en el DOM
 
-  // Función para mostrar los resultados de la página actual
-  function showResultsPage(page) {
-    const startIdx = (page - 1) * resultsPerPage
-    const endIdx = page * resultsPerPage
-    const resultsToShow = iterResults.slice(startIdx, endIdx)
+  let $table = $('#newtonRaphsonTable');
+  let $tbody = $('#nr-body-table');
 
-    let $tbody = $('#nr-body-table')
-    $tbody.empty()
-
-    // Llenamos la tabla con los resultados de la página actual
-    resultsToShow.forEach(result => {
-      let $tr = $('<tr>')
-
-      $tr.append($('<td>').text(result.paso))
-      $tr.append($('<td>').text(result.x))
-      $tr.append($('<td>').text(result.f))
-      $tr.append($('<td>').text(result.error))
-
-      $tbody.append($tr)
-    })
-
-    // Actualizamos la paginación
-    updatePagination(page)
-  }
-
-  // Función para actualizar la paginación
-  function updatePagination(page) {
-    const totalPages = Math.ceil(iterResults.length / resultsPerPage)
-    
-    // Mostrar u ocultar botones según la página actual
-    $('#pagination').empty()
-
-    // Botón de "Anterior"
-    const prevDisabled = page <= 1 ? 'disabled' : ''
-    $('#pagination').append(`<button class="page-btn ${prevDisabled}" data-page="${page - 1}">Anterior</button>`)
-
-    // Botones de las páginas
-    for (let i = 1; i <= totalPages; i++) {
-      const activeClass = (i === page) ? 'active' : ''
-      $('#pagination').append(`<button class="page-btn ${activeClass}" data-page="${i}">${i}</button>`)
+  // Esperar a que la tabla esté en el DOM antes de llenarla
+  setTimeout(() => {
+    if ($tbody.length === 0) {
+      console.error("No se encontró #nr-body-table en el DOM.");
+      return;
     }
 
-    // Botón de "Siguiente"
-    const nextDisabled = page >= totalPages ? 'disabled' : ''
-    $('#pagination').append(`<button class="page-btn ${nextDisabled}" data-page="${page + 1}">Siguiente</button>`)
+    $tbody.empty();
 
-    // Añadir evento de clic a los botones de paginación
-    $('.page-btn').on('click', function () {
-      const page = parseInt($(this).data('page'))
-      if (!$(this).hasClass('disabled')) {
-        showResultsPage(page)
-      }
-    })
-  }
+    iterResults.forEach(result => {
+      let $tr = $('<tr>');
 
-  result.load('components/tables/newton-raphson-table.html', function () {
-    // Mostrar la primera página al cargar la tabla
-    showResultsPage(currentPage)
-  })
+      $tr.append($('<td>').text(result.paso));
+      $tr.append($('<td>').text(result.x.toFixed(decimales)));
+      $tr.append($('<td>').text(result.f.toFixed(decimales)));
+      $tr.append($('<td>').text(result.error));
+
+      $tbody.append($tr);
+    });
+
+    console.log("Filas agregadas:", $tbody.children().length);
+
+    // Inicializar DataTables con scroll y sin paginación
+    if ($.fn.DataTable.isDataTable($table)) {
+      $table.DataTable().destroy();
+    }
+
+    $table.DataTable({
+      paging: false,             // Desactiva la paginación
+      scrollY: '300px',          // Scroll vertical
+      scrollX: true,             // Scroll horizontal
+      scrollCollapse: true,      // Colapsar el scroll si no hay suficientes datos
+      searching: false,          // Desactiva la búsqueda
+      info: false,               // Oculta la información de la tabla
+      fixedHeader: true,         // Habilita el encabezado fijo
+      autoWidth: false,
+    });
+
+  }, 100); // Esperar 100ms para asegurar que el HTML está cargado en el DOM
 }

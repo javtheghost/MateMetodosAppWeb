@@ -51,30 +51,3 @@ footer {
     font-size: 1.1rem;
     color: #495057;
   }
-
-
-
-
-  .pagination {
-    margin-top: 20px;
-    text-align: center;
-  }
-  
-  .page-btn {
-    padding: 10px;
-    margin: 0 5px;
-    cursor: pointer;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 5px;
-  }
-  
-  .page-btn.active {
-    background-color: #0056b3;
-  }
-  
-  .page-btn:hover {
-    background-color: #0056b3;
-  }
-  

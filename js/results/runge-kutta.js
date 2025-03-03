@@ -25,6 +25,11 @@ function rungeKuttaResult({
   const resultsPerPage = 10;  // Número de resultados por página
   let currentPage = 1;  // Página actual
 
+  // Función para formatear valores con la precisión de decimales especificada
+  function formatValue(value) {
+    return parseFloat(value).toFixed(decimales);
+  }
+
   // Función para mostrar los resultados de la página actual
   function showResultsPage(page) {
     const startIdx = (page - 1) * resultsPerPage;
@@ -39,13 +44,13 @@ function rungeKuttaResult({
       let $tr = $('<tr>');
 
       $tr.append($('<td>').text(iteracion.paso)); // Iteración
-      $tr.append($('<td>').text(iteracion.xn)); // x{n}
-      $tr.append($('<td>').text(iteracion.yn)); // y{n}
-      $tr.append($('<td>').text(iteracion.k1)); // k1
-      $tr.append($('<td>').text(iteracion.k2)); // k2
-      $tr.append($('<td>').text(iteracion.k3)); // k3
-      $tr.append($('<td>').text(iteracion.k4)); // k4
-      $tr.append($('<td>').text(iteracion.yn1)); // y{n+1}
+      $tr.append($('<td>').text(formatValue(iteracion.xn))); // x{n}
+      $tr.append($('<td>').text(formatValue(iteracion.yn))); // y{n}
+      $tr.append($('<td>').text(formatValue(iteracion.k1))); // k1
+      $tr.append($('<td>').text(formatValue(iteracion.k2))); // k2
+      $tr.append($('<td>').text(formatValue(iteracion.k3))); // k3
+      $tr.append($('<td>').text(formatValue(iteracion.k4))); // k4
+      $tr.append($('<td>').text(formatValue(iteracion.yn1))); // y{n+1}
 
       $tbody.append($tr);
     });

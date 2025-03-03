@@ -1,8 +1,4 @@
-function rungeKuttaResult({
-  decimales,
-  form_data,
-  result
-}) {
+function rungeKuttaResult({ decimales, form_data, result }) {
   const {
     'rk4o-paso': paso,
     'rk4o-x0': x0,
@@ -21,77 +17,80 @@ function rungeKuttaResult({
     f
   });
 
-  const iterResults = res.iteraciones; // Asumiendo que los resultados están en res.iteraciones
-  const resultsPerPage = 10;  // Número de resultados por página
-  let currentPage = 1;  // Página actual
+  console.log("Datos devueltos por rungeKutta:", res); // Depuración
 
-  // Función para formatear valores con la precisión de decimales especificada
-  function formatValue(value) {
-    return parseFloat(value).toFixed(decimales);
+  if (!res.iteraciones || res.iteraciones.length === 0) {
+    console.error("No se generaron iteraciones.");
+    return;
   }
 
-  // Función para mostrar los resultados de la página actual
-  function showResultsPage(page) {
-    const startIdx = (page - 1) * resultsPerPage;
-    const endIdx = page * resultsPerPage;
-    const resultsToShow = iterResults.slice(startIdx, endIdx);
+  // Insertar el HTML de la tabla directamente en el contenedor "result"
+  const tableHtml = `
+    <div class="table-scroll-container">
+      <h1 class="text-primary">Resultados:</h1>
+      <table id="rungeKuttaTable" class="display">
+        <thead>
+          <tr>
+            <th>n</th>
+            <th>x{n}</th>
+            <th>y{n}</th>
+            <th>k1</th>
+            <th>k2</th>
+            <th>k3</th>
+            <th>k4</th>
+            <th>y{n+1}</th>
+          </tr>
+        </thead>
+        <tbody id="rk4o-body-table"></tbody>
+      </table>
+    </div>
+  `;
+  result.html(tableHtml); // Insertar la tabla en el DOM
 
-    let $tbody = $('#rk4o-body-table');
+  let $table = $('#rungeKuttaTable');
+  let $tbody = $('#rk4o-body-table');
+
+  // Esperar a que la tabla esté en el DOM antes de llenarla
+  setTimeout(() => {
+    if ($tbody.length === 0) {
+      console.error("No se encontró #rk4o-body-table en el DOM.");
+      return;
+    }
+
     $tbody.empty();
 
-    // Llenar la tabla con los resultados de la página actual
-    resultsToShow.forEach(iteracion => {
+    res.iteraciones.forEach(iteracion => {
       let $tr = $('<tr>');
 
-      $tr.append($('<td>').text(iteracion.paso)); // Iteración
-      $tr.append($('<td>').text(formatValue(iteracion.xn))); // x{n}
-      $tr.append($('<td>').text(formatValue(iteracion.yn))); // y{n}
-      $tr.append($('<td>').text(formatValue(iteracion.k1))); // k1
-      $tr.append($('<td>').text(formatValue(iteracion.k2))); // k2
-      $tr.append($('<td>').text(formatValue(iteracion.k3))); // k3
-      $tr.append($('<td>').text(formatValue(iteracion.k4))); // k4
-      $tr.append($('<td>').text(formatValue(iteracion.yn1))); // y{n+1}
+      $tr.append($('<td>').text(iteracion.paso)); 
+      $tr.append($('<td>').text(iteracion.xn.toFixed(decimales))); 
+      $tr.append($('<td>').text(iteracion.yn.toFixed(decimales))); 
+      $tr.append($('<td>').text(iteracion.k1.toFixed(decimales))); 
+      $tr.append($('<td>').text(iteracion.k2.toFixed(decimales))); 
+      $tr.append($('<td>').text(iteracion.k3.toFixed(decimales))); 
+      $tr.append($('<td>').text(iteracion.k4.toFixed(decimales))); 
+      $tr.append($('<td>').text(iteracion.yn1.toFixed(decimales))); 
 
       $tbody.append($tr);
     });
 
-    // Actualizar la paginación
-    updatePagination(page);
-  }
+    console.log("Filas agregadas:", $tbody.children().length);
 
-  // Función para actualizar la paginación
-  function updatePagination(page) {
-    const totalPages = Math.ceil(iterResults.length / resultsPerPage);
-    
-    // Mostrar u ocultar botones según la página actual
-    $('#pagination').empty();
-
-    // Botón de "Anterior"
-    const prevDisabled = page <= 1 ? 'disabled' : '';
-    $('#pagination').append(`<button class="page-btn ${prevDisabled}" data-page="${page - 1}">Anterior</button>`);
-
-    // Botones de las páginas
-    for (let i = 1; i <= totalPages; i++) {
-      const activeClass = (i === page) ? 'active' : '';
-      $('#pagination').append(`<button class="page-btn ${activeClass}" data-page="${i}">${i}</button>`);
+    // Inicializar DataTables con scroll y sin paginación
+    if ($.fn.DataTable.isDataTable($table)) {
+      $table.DataTable().destroy();
     }
 
-    // Botón de "Siguiente"
-    const nextDisabled = page >= totalPages ? 'disabled' : '';
-    $('#pagination').append(`<button class="page-btn ${nextDisabled}" data-page="${page + 1}">Siguiente</button>`);
-
-    // Añadir evento de clic a los botones de paginación
-    $('.page-btn').on('click', function () {
-      const page = parseInt($(this).data('page'));
-      if (!$(this).hasClass('disabled')) {
-        showResultsPage(page);
-      }
+    $table.DataTable({
+      paging: false,             // Desactiva la paginación
+      scrollY: '300px',          // Scroll vertical
+      scrollX: true,             // Scroll horizontal
+      scrollCollapse: true,      // Colapsar el scroll si no hay suficientes datos
+      searching: false,          // Desactiva la búsqueda
+      info: false,               // Oculta la información de la tabla
+      fixedHeader: true,         // Habilita el encabezado fijo
+      autoWidth: false,
     });
-  }
 
-  // Cargar la tabla y mostrar los resultados
-  result.load('components/tables/runge-kutta-table.html', function () {
-    // Mostrar la primera página al cargar la tabla
-    showResultsPage(currentPage);
-  });
+  }, 100); // Esperar 100ms para asegurar que el HTML está cargado en el DOM
 }

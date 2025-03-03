@@ -8,11 +8,12 @@ const decimalSlider = `
 `;
 
 const methods = {
-  eulerMejorado: {
-    div: $('.euler-mejorado'),
-    inputs: ['#em-iteraciones', '#em-paso', '#em-x', '#em-y', '#em-f']
-  },
-  
+ eulerMejorado: {
+  div: $('.euler-mejorado'),
+  inputs: ['#em-iteraciones', '#em-paso', '#em-x', '#em-y', '#em-f'],
+  load: $('.euler-mejorado').load('components/form/euler-mejorado.html')
+},
+
   newtonRaphson: {
     div: $('.newton-raphson'),
     inputs: ['#nr-x', '#nr-f'],

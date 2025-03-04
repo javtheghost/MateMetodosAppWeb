@@ -16,7 +16,6 @@ function eulerResult({ decimales, form_data, result }) {
     f
   });
 
-  console.log("Resultados generados:", res); // Depuración
 
   // Insertar el HTML de la tabla directamente en el contenedor "result"
   const tableHtml = `

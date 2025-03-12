@@ -1,21 +1,26 @@
 function eulerResult({ decimales, form_data, result }) {
   const {
-    'em-iteraciones': iteraciones,
+    'em-iteraciones': xn,
     'em-paso': paso,
-    'em-x': x,
-    'em-y': y,
+    'em-x': x0,
+    'em-y': y0,
     'em-f': f,
   } = form_data;
 
+  // Calcular el número de iteraciones necesarias
+  const h = parseFloat(paso);
+  const xInicial = parseFloat(x0);
+  const xFinal = parseFloat(xn);
+  const iteraciones = Math.ceil((xFinal - xInicial) / h); // Redondear hacia arriba
+
   const res = eulerMejorado({
     decimales: parseInt(decimales),
-    iteraciones: parseInt(iteraciones),
-    h: parseFloat(paso),
-    xn: parseFloat(x),
-    yn: parseFloat(y),
+    iteraciones: iteraciones,
+    h: h,
+    xn: xInicial,
+    yn: parseFloat(y0),
     f
   });
-
 
   // Insertar el HTML de la tabla directamente en el contenedor "result"
   const tableHtml = `
@@ -62,7 +67,6 @@ function eulerResult({ decimales, form_data, result }) {
 
     $tbody.append($tr);
   }
-
 
   // Inicializar DataTables
   $table.DataTable({
